@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1670" height="1908" viewBox="0 0 1670 1908" font-family="'PingFang SC','Microsoft YaHei','Helvetica Neue',Arial,sans-serif">
 <rect width="1670" height="1908" fill="#F5F6F8"/>
 <text x="40" y="52" font-size="26" font-weight="600" fill="#1A1A1A">校园失物招领小程序 · 原型总览</text>
-<text x="40" y="78" font-size="14" fill="#8A9099">共 7 个页面 · 375 × 812（微信小程序标准尺寸）· 可点击原型已部署至 Netlify</text>
+<text x="40" y="78" font-size="14" fill="#8A9099">共 7 个页面 · 375 × 812（微信小程序标准尺寸）· 原型工具：墨刀</text>
 <text x="40" y="130" font-size="15" font-weight="600" fill="#07C160">首页</text>
 <g transform="translate(40,142)"><rect width="375" height="812" rx="14" fill="#FFFFFF" stroke="#E3E6EA" stroke-width="1"/></g>
 <g transform="translate(40,142)">

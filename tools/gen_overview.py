@@ -45,7 +45,7 @@ def main():
          f'<text x="{PAD_X}" y="52" font-size="26" font-weight="600" fill="#1A1A1A">'
          f'校园失物招领小程序 · 原型总览</text>',
          f'<text x="{PAD_X}" y="78" font-size="14" fill="#8A9099">'
-         f'共 7 个页面 · 375 × 812（微信小程序标准尺寸）· 可点击原型已部署至 Netlify</text>']
+         f'共 7 个页面 · 375 × 812（微信小程序标准尺寸）· 原型工具：墨刀</text>']
 
     for i, (fn, label) in enumerate(PAGES):
         col, row = i % COLS, i // COLS
