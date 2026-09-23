@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>校园失物招领小程序 · 可点击原型演示</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: #23262B; color: #E8EAED;
+    font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+    display: flex; align-items: center; justify-content: center; gap: 32px;
+    padding: 32px; flex-wrap: wrap;
+  }
+  .side { width: 300px; }
+  h1 { font-size: 19px; margin: 0 0 4px; font-weight: 600; }
+  .sub { font-size: 12px; color: #8B9199; margin-bottom: 20px; line-height: 1.7; }
+  .nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .nav button {
+    font: inherit; font-size: 12px; padding: 7px 12px; border-radius: 8px; cursor: pointer;
+    background: #2F343B; color: #C3C8CE; border: 1px solid #3A4049; transition: .15s;
+  }
+  .nav button:hover { background: #3A4049; }
+  .nav button.on { background: #07C160; border-color: #07C160; color: #fff; font-weight: 600; }
+  .note { font-size: 12px; color: #8B9199; line-height: 1.8; }
+  .note b { color: #C3C8CE; font-weight: 600; }
+  .note code {
+    font-size: 11px; background: #2F343B; padding: 1px 5px; border-radius: 4px; color: #7FD6A5;
+  }
+
+  /* 手机外壳 */
+  .phone {
+    position: relative; width: 375px; height: 812px; flex: 0 0 auto;
+    border-radius: 42px; background: #fff; padding: 0;
+    box-shadow: 0 0 0 11px #12141A, 0 0 0 13px #33383F, 0 26px 60px rgba(0,0,0,.55);
+    overflow: hidden;
+  }
+  .phone img { display: block; width: 375px; height: 812px; }
+  .hot {
+    position: absolute; cursor: pointer; border-radius: 8px;
+    background: rgba(7,193,96,0); transition: background .12s;
+  }
+  .hot:hover { background: rgba(7,193,96,.20); box-shadow: inset 0 0 0 2px #07C160; }
+  .hot.tip:hover { background: rgba(255,143,31,.18); box-shadow: inset 0 0 0 2px #FF8F1F; }
+  #toast {
+    position: absolute; left: 50%; bottom: 104px; transform: translateX(-50%) translateY(8px);
+    background: rgba(0,0,0,.82); color: #fff; font-size: 12px; padding: 9px 16px;
+    border-radius: 8px; opacity: 0; pointer-events: none; transition: .22s; white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="side">
+  <h1>校园失物招领小程序</h1>
+  <div class="sub">可点击原型演示 · 375×812（微信小程序标准尺寸）<br>
+    鼠标划过绿色区域即为可点击的热区。</div>
+  <div class="nav" id="nav"></div>
+  <div class="note" id="note"></div>
+</div>
+
+<div class="phone" id="phone">
+  <img id="shot" src="" alt="原型页面">
+  <div id="toast"></div>
+</div>
+
+<script>
+const PAGES = {
+  "01-首页.svg": {
+    name: "01 首页",
+    note: "<b>核心入口页。</b>顶部搜索框、寻物/招领分类筛选、信息卡片列表。<br><br><b>可点击：</b><br>· 搜索框 → 进入搜索页<br>· 任意信息卡片 → 查看物品详情<br>· 底部「发布」→ 发布信息页<br>· 底部「我的」→ 我的发布",
+    hot: [
+      [16,  99, 343, 38, "04-搜索页.svg"],
+      [16, 206, 343, 104, "06-信息详情.svg"],
+      [16, 320, 343, 104, "06-信息详情.svg"],
+      [16, 434, 343, 104, "06-信息详情.svg"],
+      [16, 548, 343, 104, "06-信息详情.svg"],
+      [  0, 732, 125,  80, "01-首页.svg"],
+      [125, 732, 125,  80, "02-发布信息.svg"],
+      [250, 732, 125,  80, "07-我的发布.svg"]
+    ]
+  },
+  "02-发布信息.svg": {
+    name: "02 发布信息",
+    note: "<b>发布表单页。</b>先选「寻物 / 招领」，再填物品照片、名称、分类、地点时间、描述和联系方式。带 <code>*</code> 为必填。<br><br><b>可点击：</b><br>· 右下「立即发布」→ 发布成功<br>· 左上返回 → 首页",
+    hot: [
+      [12,  52,  36, 36, "01-首页.svg"],
+      [16, 740, 343, 48, "03-发布成功.svg"],
+      [16, 100, 171, 40, "02-发布信息.svg"],
+      [187,100, 172, 40, "02-发布信息.svg"],
+      [16, 402, 300, 36, "02-发布信息.svg"],
+      [16, 186,  88, 88, "tip:选择照片（原型中不实现上传）"]
+    ]
+  },
+  "03-发布成功.svg": {
+    name: "03 发布成功",
+    note: "<b>发布成功的反馈弹层。</b>明确告知结果，并给出下一步去向，避免用户迷失。<br><br><b>可点击：</b><br>· 「查看我的发布」→ 我的发布<br>· 「返回首页」→ 首页",
+    hot: [
+      [80, 462, 215, 42, "07-我的发布.svg"],
+      [120, 508, 135, 28, "01-首页.svg"]
+    ]
+  },
+  "04-搜索页.svg": {
+    name: "04 搜索页",
+    note: "<b>搜索页（输入态）。</b>提供搜索历史与热门搜索，降低输入成本——很多同学不知道该搜什么词。<br><br><b>可点击：</b><br>· 搜索框 / 历史词 / 热门词 → 搜索结果",
+    hot: [
+      [12,  52,  36, 36, "01-首页.svg"],
+      [320, 48,  55, 36, "01-首页.svg"],
+      [48,  48, 265, 36, "05-搜索结果.svg"],
+      [16, 146,  63, 36, "05-搜索结果.svg"],
+      [16, 190,  63, 36, "05-搜索结果.svg"],
+      [16, 304, 343, 40, "05-搜索结果.svg"],
+      [16, 344, 343, 40, "05-搜索结果.svg"],
+      [16, 384, 343, 40, "05-搜索结果.svg"]
+    ]
+  },
+  "05-搜索结果.svg": {
+    name: "05 搜索结果",
+    note: "<b>搜索结果页。</b>标题中的关键词高亮，并用绿色/橙色标签区分「招领」「寻物」。<br><br><b>可点击：</b><br>· 任意结果卡片 → 查看物品详情<br>· 左上返回 → 搜索页",
+    hot: [
+      [12,  52,  36, 36, "04-搜索页.svg"],
+      [320, 48,  55, 36, "01-首页.svg"],
+      [16, 180, 343, 104, "06-信息详情.svg"],
+      [16, 294, 343, 104, "06-信息详情.svg"],
+      [16, 408, 343, 104, "06-信息详情.svg"],
+      [16, 522, 343, 104, "06-信息详情.svg"]
+    ]
+  },
+  "06-信息详情.svg": {
+    name: "06 信息详情",
+    note: "<b>物品详情页。</b>物品大图、类型标签、标题、地点时间、描述、发布者信息，底部固定操作区。<br><br><b>可点击：</b><br>· 「联系 TA」→ 提示查看联系方式<br>· 「收藏」(tip)",
+    hot: [
+      [12,  52,  36, 36, "01-首页.svg"],
+      [150,736, 209, 48, "tip:弹出发布者微信号，长按复制后到微信添加（不做站内聊天）"],
+      [ 18,730,  44, 62, "tip:收藏（原型中不实现）"],
+      [ 82,730,  44, 62, "tip:分享给微信好友（原型中不实现）"]
+    ]
+  },
+  "07-我的发布.svg": {
+    name: "07 我的发布",
+    note: "<b>我的发布页。</b>查看自己发布过的信息，并可<b>修改信息状态</b>（标记为已解决）、编辑或删除。<br><br><b>可点击：</b><br>· 任意卡片 → 查看详情<br>· 底部「首页」→ 返回首页",
+    hot: [
+      [16, 336, 343, 112, "06-信息详情.svg"],
+      [16, 458, 343, 112, "06-信息详情.svg"],
+      [16, 580, 343, 112, "06-信息详情.svg"],
+      [104, 424, 90, 20, "tip:把状态改为「已解决」，该信息将不再出现在首页列表"],
+      [104, 546, 90, 20, "tip:把状态改为「已解决」，该信息将不再出现在首页列表"],
+      [  0, 732, 125,  80, "01-首页.svg"],
+      [125, 732, 125,  80, "02-发布信息.svg"],
+      [250, 732, 125,  80, "07-我的发布.svg"]
+    ]
+  }
+};
+const ORDER = Object.keys(PAGES);
+const enc = (p) => "svg/" + encodeURIComponent(p);
+
+const shot = document.getElementById("shot");
+const phone = document.getElementById("phone");
+const nav = document.getElementById("nav");
+const note = document.getElementById("note");
+const toastEl = document.getElementById("toast");
+let cur = ORDER[0], timer = null;
+
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(timer);
+  timer = setTimeout(() => toastEl.classList.remove("show"), 2200);
+}
+
+function render(page) {
+  cur = page;
+  const cfg = PAGES[page];
+  shot.src = enc(page);
+  note.innerHTML = cfg.note;
+  [...nav.children].forEach((b) => b.classList.toggle("on", b.dataset.p === page));
+  phone.querySelectorAll(".hot").forEach((h) => h.remove());
+  cfg.hot.forEach(([x, y, w, h, target]) => {
+    const d = document.createElement("div");
+    d.className = "hot" + (target.startsWith("tip:") ? " tip" : "");
+    d.style.cssText = `left:${x}px;top:${y}px;width:${w}px;height:${h}px`;
+    d.title = target.startsWith("tip:") ? target.slice(4) : "跳转到 " + (PAGES[target] || {}).name;
+    d.onclick = () => target.startsWith("tip:") ? toast(target.slice(4)) : render(target);
+    phone.appendChild(d);
+  });
+}
+
+ORDER.forEach((p) => {
+  const b = document.createElement("button");
+  b.textContent = PAGES[p].name;
+  b.dataset.p = p;
+  b.onclick = () => render(p);
+  nav.appendChild(b);
+});
+render(ORDER[0]);
+</script>
+</body>
+</html>
